@@ -1,6 +1,7 @@
 // --- CONFIGURATION ---
 const CONFIG = {
-  START_PAGE: 911, // Start from page 1
+  START_PAGE: 1852, // Start from page 911
+  MAX_PAGE: null, // 🛑 Stop after this page (Set to null for no limit)
   DELAY_MS: 1500, // 1.5s delay to be nice to Cloudflare
   BATCH_SIZE: 200, // Download JSON after collecting this many items
 
@@ -53,9 +54,18 @@ function saveBatch(isFinal = false) {
 
 // --- API FETCH FUNCTION ---
 async function fetchPage() {
+  // 1. Check for Manual Stop
   if (!window.apiState.running) {
     saveBatch(true);
-    console.log("🛑 Script Stopped.");
+    console.log("🛑 Script Stopped manually.");
+    return;
+  }
+
+  // 2. Check for Max Page Limit
+  if (CONFIG.MAX_PAGE && window.apiState.currentPage > CONFIG.MAX_PAGE) {
+    saveBatch(true);
+    console.log(`🏁 Reached Max Page limit (${CONFIG.MAX_PAGE}). Finished!`);
+    window.apiState.running = false;
     return;
   }
 
@@ -119,6 +129,8 @@ async function fetchPage() {
 // --- START ---
 console.clear();
 console.log("🚀 API SCRAPER INITIALIZED");
-console.log("ℹ️ This mimics the browser network requests directly.");
+console.log(
+  `ℹ️ Range: Page ${CONFIG.START_PAGE} to ${CONFIG.MAX_PAGE || "Infinity"}`,
+);
 console.log("⌨️ Type 'x' + Enter to stop.");
 fetchPage();
