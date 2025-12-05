@@ -4,7 +4,7 @@ import json
 import os
 
 # --- CONFIGURATION ---
-INPUT_PATTERN = "01/api_batch_*.json"
+INPUT_PATTERN = "05/api_batch_*.json"
 OUTPUT_FILE = "final_api_data.csv"
 
 CSV_HEADERS = [
