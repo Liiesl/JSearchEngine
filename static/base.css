@@ -1,0 +1,25 @@
+:root {
+    --bg-body: #202124;
+    --bg-panel: #303134;
+    --text-main: #e8eaed;
+    --text-muted: #bdc1c6;
+    --link-color: #8ab4f8;
+    --accent: #8ab4f8;
+    --search-border: #5f6368;
+    --modal-bg: rgba(0, 0, 0, 0.9);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: arial, sans-serif;
+}
+
+body {
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}

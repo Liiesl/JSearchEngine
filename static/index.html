@@ -37,7 +37,7 @@
                     </div>
                 </div>
 
-                <!-- NEW: Similar Context Header (Hidden by default) -->
+                <!-- Similar Context Header (Hidden by default) -->
                 <div id="similarContext" class="similar-context hidden">
                     <div class="sc-content">
                         <div class="sc-thumb-wrapper">
@@ -116,28 +116,9 @@
             <div id="modalCaption"></div>
         </div>
 
-        <!-- Help Modal -->
-        <div id="helpModal" class="modal">
-            <div class="modal-content doc-content">
-                <span class="modal-close close-help-modal">&times;</span>
-                <h2 style="margin-top: 0">Documentation</h2>
-                <!-- (Documentation content same as before) -->
-                <div class="doc-section">
-                    <h3>🔍 Search Guide</h3>
-                    <p>
-                        This engine uses <strong>Vector Embeddings</strong>...
-                    </p>
-                    <!-- ... abbreviated for brevity ... -->
-                </div>
-                <div class="doc-footer">
-                    <p>
-                        Powered by <strong>Lancedb</strong> &
-                        <strong>Sentence-Transformers</strong>
-                    </p>
-                </div>
-            </div>
-        </div>
+        <!-- Documentation Modal (Content injected by help.js) -->
+        <div id="helpModal" class="modal"></div>
 
-        <script src="/static/app.js"></script>
+        <script src="/static/app.js" type="module"></script>
     </body>
 </html>

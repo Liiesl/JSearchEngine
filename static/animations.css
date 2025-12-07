@@ -1,0 +1,58 @@
+/* --- VIEW TRANSITIONS --- */
+::view-transition-group(active-thumb) {
+    animation-duration: 0.5s;
+    animation-timing-function: cubic-bezier(0.2, 0, 0.2, 1);
+    z-index: 1000;
+}
+
+header {
+    view-transition-name: main-header;
+}
+.logo {
+    view-transition-name: app-logo;
+}
+.search-container {
+    view-transition-name: search-bar;
+}
+main {
+    view-transition-name: content-area;
+}
+
+::view-transition-group(main-header),
+::view-transition-group(app-logo),
+::view-transition-group(search-bar) {
+    animation-duration: 0.4s;
+    animation-timing-function: cubic-bezier(0.2, 0, 0.2, 1);
+}
+
+/* --- KEYFRAMES --- */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes loading {
+    0% {
+        left: 0;
+        width: 100%;
+    }
+    100% {
+        left: 100%;
+        width: 0;
+    }
+}
