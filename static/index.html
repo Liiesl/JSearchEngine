@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>JSearch</title>
+        <link rel="stylesheet" href="/static/style.css" />
+    </head>
+    <!-- Default to Home Mode -->
+    <body class="home-mode">
+        <!-- Loading Bar -->
+        <div id="loader" class="loading-bar"></div>
+
+        <header>
+            <a href="/" class="logo">J<span>Search</span></a>
+
+            <div class="search-container">
+                <!-- Standard Search Input -->
+                <div id="standardSearch" class="search-wrapper">
+                    <input
+                        type="text"
+                        id="searchInput"
+                        autocomplete="off"
+                        placeholder="Search semantic index..."
+                    />
+                    <div class="search-actions">
+                        <button
+                            id="resetBtn"
+                            class="search-icon-btn"
+                            style="display: none"
+                        >
+                            ✕
+                        </button>
+                        <button id="searchBtn" class="search-icon-btn">
+                            🔍
+                        </button>
+                    </div>
+                </div>
+
+                <!-- NEW: Similar Context Header (Hidden by default) -->
+                <div id="similarContext" class="similar-context hidden">
+                    <div class="sc-content">
+                        <div class="sc-thumb-wrapper">
+                            <img id="scImg" src="" alt="" />
+                        </div>
+                        <div class="sc-info">
+                            <span class="sc-label"
+                                >Finding movies similar to:</span
+                            >
+                            <div class="sc-details">
+                                <span id="scId" class="sc-badge"></span>
+                                <h3 id="scTitle"></h3>
+                            </div>
+                        </div>
+                    </div>
+                    <button
+                        id="closeSimilarBtn"
+                        class="sc-close-btn"
+                        title="Exit Similarity Mode"
+                    >
+                        Exit
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tools & Help -->
+            <div class="header-tools">
+                <button id="helpBtn" class="tools-toggle">Help</button>
+                <button id="toolsBtn" class="tools-toggle hidden">Tools</button>
+            </div>
+        </header>
+
+        <div id="toolsPanel" class="tools-panel">
+            <div class="setting-group">
+                <label>Limit: <span id="limitVal">20</span></label>
+                <input
+                    type="range"
+                    id="limitInput"
+                    min="10"
+                    max="50"
+                    value="20"
+                />
+            </div>
+            <div class="setting-group">
+                <label>Strictness: <span id="threshVal">0.65</span></label>
+                <input
+                    type="range"
+                    id="threshInput"
+                    min="0"
+                    max="1"
+                    step="0.01"
+                    value="0.65"
+                />
+            </div>
+        </div>
+
+        <main>
+            <div id="searchMeta" class="result-stats hidden"></div>
+            <div id="resultsList" class="results-list">
+                <!-- Results injected here -->
+            </div>
+        </main>
+
+        <button
+            id="backToTop"
+            class="back-to-top hidden"
+            aria-label="Back to top"
+        >
+            ↑
+        </button>
+
+        <!-- Image Modal -->
+        <div id="imageModal" class="modal">
+            <span class="modal-close close-img-modal">&times;</span>
+            <img class="modal-content" id="modalImg" />
+            <div id="modalCaption"></div>
+        </div>
+
+        <!-- Help Modal -->
+        <div id="helpModal" class="modal">
+            <div class="modal-content doc-content">
+                <span class="modal-close close-help-modal">&times;</span>
+                <h2 style="margin-top: 0">Documentation</h2>
+                <!-- (Documentation content same as before) -->
+                <div class="doc-section">
+                    <h3>🔍 Search Guide</h3>
+                    <p>
+                        This engine uses <strong>Vector Embeddings</strong>...
+                    </p>
+                    <!-- ... abbreviated for brevity ... -->
+                </div>
+                <div class="doc-footer">
+                    <p>
+                        Powered by <strong>Lancedb</strong> &
+                        <strong>Sentence-Transformers</strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <script src="/static/app.js"></script>
+    </body>
+</html>
