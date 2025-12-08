@@ -436,6 +436,57 @@ async def websocket_similar(websocket: WebSocket):
             pass
 
 
+
+@app.get("/api/actress_top_videos")
+async def get_actress_top_videos(name: str):
+    # 1. Fetch Profile
+    profile = search_engine.find_profile(name)
+    
+    if not profile:
+        return {"profile": None, "videos": []}
+        
+    # 2. Search Videos
+    table = resources.get("table")
+    if not table:
+         return {"profile": None, "videos": []}
+
+    try:
+        # Use the name found in the profile to be consistent
+        search_name = profile.get("name", name).replace("'", "''")
+        
+        videos_df = (
+            table.search()
+            .where(f"actress_names LIKE '%{search_name}%'")
+            .limit(50) # Get enough to sort reliable
+            .to_pandas()
+        )
+    except Exception as e:
+        print(f"Top Videos Error: {e}")
+        return {"profile": None, "videos": []}
+
+    final_videos = []
+    if not videos_df.empty:
+        if "releasedate" in videos_df.columns:
+            videos_df["releasedate"] = pd.to_datetime(videos_df["releasedate"], errors='coerce')
+            videos_df = videos_df.sort_values(by='releasedate', ascending=False)
+        
+        # Take top 5
+        videos_df = videos_df.head(5)
+        
+        for _, row in videos_df.iterrows():
+            row_dict = row.replace({pd.NA: None}).to_dict()
+            if "vector" in row_dict:
+                del row_dict["vector"]
+            if row_dict.get("releasedate"):
+                row_dict["releasedate"] = str(row_dict["releasedate"]).split(" ")[0]
+            final_videos.append(row_dict)
+
+    return {
+        "profile": profile,
+        "videos": final_videos
+    }
+
+
 # --- STATIC FILES ---
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
