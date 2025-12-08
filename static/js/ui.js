@@ -15,7 +15,14 @@ const LOADING_MESSAGES = [
 ];
 
 export function startLoader() {
-  // Inject HTML
+  // 1. Force the grid back to full-width immediately
+  elements.body.classList.remove("has-sidebar");
+  
+  // 2. Hide the Knowledge Panel immediately
+  elements.knowledgePanel.classList.add("hidden");
+  elements.knowledgePanel.innerHTML = ""; // Clear old content
+
+  // 3. Inject Loader HTML
   elements.resultsList.innerHTML = renderLoader();
   elements.loader.classList.add("active");
 
@@ -48,8 +55,6 @@ export function openImageModal(imgSrc, captionText) {
   elements.imageModal.classList.add("active");
 }
 
-// ... rest of ui.js (closeModals, toggleToolsPanel, setHomeMode, setResultsMode, updateSimilarHeader, updateMeta) ...
-
 export function closeModals() {
   elements.imageModal.classList.remove("active");
   elements.helpModal.classList.remove("active");
@@ -68,6 +73,8 @@ export function setHomeMode() {
   withTransition(() => {
     elements.body.classList.remove("results-mode");
     elements.body.classList.add("home-mode");
+    elements.body.classList.remove("has-sidebar"); // Ensure sidebar class is gone
+    
     elements.resultsList.innerHTML = "";
     elements.searchMeta.classList.add("hidden");
     elements.toolsBtn.classList.add("hidden");
@@ -75,6 +82,10 @@ export function setHomeMode() {
     elements.resetBtn.style.display = "none";
     elements.standardSearch.classList.remove("hidden");
     elements.similarContext.classList.add("hidden");
+    
+    elements.knowledgePanel.classList.add("hidden");
+    elements.knowledgePanel.innerHTML = "";
+    
     window.scrollTo(0, 0);
   });
 }

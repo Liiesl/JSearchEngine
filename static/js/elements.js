@@ -16,6 +16,9 @@ export const elements = {
   resultsList: document.getElementById("resultsList"),
   backToTopBtn: document.getElementById("backToTop"),
 
+  //main area
+  knowledgePanel: document.getElementById("knowledgePanel"),
+
   // Similar Context Elements
   scImg: document.getElementById("scImg"),
   scId: document.getElementById("scId"),

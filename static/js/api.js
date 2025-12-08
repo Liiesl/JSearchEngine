@@ -1,6 +1,6 @@
 import { elements } from "./elements.js";
 import { setResultsMode, updateMeta, startLoader, stopLoader } from "./ui.js"; // Import new functions
-import { createResultCard, renderError } from "./render.js";
+import { createResultCard, renderError, renderKnowledgePanel, createEntityHeader } from "./render.js";
 import { withTransition } from "./utils.js";
 import { closeWebSocket } from "./socket.js";
 
@@ -48,29 +48,49 @@ export async function performStandardSearch(
     const data = await response.json();
 
     const renderNewContent = () => {
-      stopLoader(); // STOP LOADER
+        stopLoader();
 
-      const count = data.results.length;
-      updateMeta(
-        `About ${count} results <span style="margin: 0 10px">•</span> Mode: ${data.mode}`,
-      );
+        const count = data.results.length;
+        updateMeta(`About ${count} results <span style="margin: 0 10px">•</span> Mode: ${data.mode}`);
 
-      if (count === 0) {
-        elements.resultsList.innerHTML = `
-            <div style="padding: 20px 0; color: #bdc1c6;">
-                <p>No results found for <strong>${query}</strong>.</p>
-                <p>Try lowering the 'Strictness'.</p>
-            </div>`;
-        return;
-      }
+        elements.resultsList.innerHTML = "";
+        elements.knowledgePanel.innerHTML = "";
+        
+        // Reset Sidebar Visibility
+        elements.knowledgePanel.classList.add("hidden");
+        elements.body.classList.remove("has-sidebar");
 
-      const fragment = document.createDocumentFragment();
-      data.results.forEach((item) => {
-        fragment.appendChild(createResultCard(item.data, item.sem_score));
-      });
-      // Clear skeleton before appending (though innerHTML set handles it mostly, this is safer)
-      elements.resultsList.innerHTML = "";
-      elements.resultsList.appendChild(fragment);
+        if (count === 0) {
+            elements.resultsList.innerHTML = `<p style="padding:20px;color:#bdc1c6;">No results found.</p>`;
+            return;
+        }
+
+        const fragment = document.createDocumentFragment();
+
+        data.results.forEach((item) => {
+            // CHECK FOR BIO ITEM
+            if (item.is_bio || item.data.type === 'bio') {
+                const tier = item.data.tier || 0;
+
+                // TIER 1+: Render "Mini Header" at top of results list
+                if (tier >= 1) {
+                    fragment.appendChild(createEntityHeader(item.data));
+                }
+                
+                // TIER 2+: Render Sidebar (Knowledge Panel)
+                if (tier >= 2) {
+                    elements.knowledgePanel.innerHTML = renderKnowledgePanel(item.data);
+                    elements.knowledgePanel.classList.remove("hidden");
+                    elements.body.classList.add("has-sidebar");
+                }
+
+            } else {
+                // Standard Video Card
+                fragment.appendChild(createResultCard(item.data, item.sem_score));
+            }
+        });
+
+        elements.resultsList.appendChild(fragment);
     };
 
     if (animate) withTransition(renderNewContent);

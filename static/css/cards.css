@@ -7,8 +7,9 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
-    max-width: 60vw;
-    min-height: 50vh; /* Ensure space for loader */
+    width: 100%;           /* Fill the available grid area */
+    max-width: 850px;      /* Prevent it from being too wide on huge screens */
+    min-height: 50vh; 
 }
 
 .result-item {
@@ -130,7 +131,7 @@
     display: flex;
     flex-direction: column;
     gap: 30px;
-    width: 100%;
+    width: 100%; /* Fill the container */
     animation: fadeIn 0.5s ease;
 }
 
@@ -233,6 +234,150 @@
     }
 }
 
+/* --- APPEND TO cards.css --- */
+
+/* 1. TOP RESULT (The "Mini" Header in the main list) */
+.entity-header-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #3c4043;
+}
+
+.entity-avatar-small {
+    width: 72px;
+    height: 72px;
+    border-radius: 8px; /* Square with radius */
+    object-fit: cover;
+    background: #202124;
+}
+
+.entity-info h2 {
+    font-size: 1.75rem;
+    font-weight: normal;
+    margin: 0 0 4px 0;
+    color: #e8eaed;
+    font-family: 'Google Sans', arial, sans-serif;
+}
+
+.entity-subtitle {
+    font-size: 0.9rem;
+    color: #bdc1c6;
+}
+
+
+/* 2. SIDEBAR KNOWLEDGE PANEL (The "Overview" section) */
+.kp-container {
+    color: #bdc1c6;
+    font-size: 0.9rem;
+    font-family: arial, sans-serif;
+    border: 1px solid #3c4043; /* Optional: adds a card border like Google Mobile, or remove for Desktop look */
+    border-radius: 8px;
+    padding: 20px;
+    background: #202124; /* Dark card background */
+}
+
+/* Image Grid (Top of Sidebar) */
+.kp-images {
+    display: flex;
+    gap: 4px;
+    margin-bottom: 16px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+.kp-main-img {
+    flex: 2;
+    background: #000;
+}
+.kp-main-img img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* "Overview" Header */
+.kp-section-title {
+    font-size: 1.3rem;
+    color: #e8eaed;
+    margin-bottom: 12px;
+    font-family: 'Google Sans', sans-serif;
+    font-weight: normal;
+}
+
+/* Description Text */
+.kp-desc {
+    line-height: 1.58;
+    color: #bdc1c6;
+    margin-bottom: 20px;
+}
+
+/* New: Group Titles for detailed stats */
+.kp-group-title {
+    color: var(--accent);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 15px 0 8px 0;
+    font-weight: bold;
+}
+
+/* Facts (Born, Height, etc) */
+.kp-fact {
+    margin-bottom: 8px;
+    line-height: 1.5;
+}
+.kp-fact b {
+    color: #e8eaed;
+    font-weight: bold;
+}
+
+/* Divider */
+.kp-divider {
+    height: 1px;
+    background: #3c4043;
+    margin: 20px 0;
+}
+
+/* Profiles / Social Icons */
+.kp-profiles-header {
+    font-size: 1.1rem;
+    color: #e8eaed;
+    margin-bottom: 15px;
+}
+
+.kp-social-grid {
+    display: flex;
+    gap: 15px;
+}
+
+.social-icon-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    text-decoration: none;
+    color: #bdc1c6;
+    font-size: 0.75rem;
+}
+
+.social-circle {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 1px solid #5f6368;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem; /* Emoji size */
+    background: #303134;
+    transition: background 0.2s;
+}
+.social-icon-btn:hover .social-circle {
+    background: #3c4043;
+}
+
 @media (max-width: 768px) {
     .result-thumb {
         width: 100px;
@@ -241,5 +386,22 @@
     .skeleton-thumb {
         width: 100px;
         height: 100px;
+    }
+    .bio-card {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    .bio-header {
+        justify-content: center;
+    }
+    .bio-stats {
+        justify-content: center;
+    }
+    .bio-label {
+        display: none;
+    }
+    .bio-thumb {
+        margin-bottom: 10px;
     }
 }

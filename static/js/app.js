@@ -136,11 +136,15 @@ elements.resultsList.addEventListener("click", (e) => {
     if (thumbImg) thumbImg.style.viewTransitionName = "active-thumb";
 
     const performUpdate = () => {
+      // Update Header
       updateSimilarHeader(id, title, img);
-      elements.body.classList.remove("home-mode");
-      elements.body.classList.add("results-mode");
-      elements.resultsList.innerHTML = "";
-      elements.loader.classList.add("active");
+      
+      // Initialize WebSocket AND Render Skeleton
+      // We do this INSIDE the transition update so the skeleton 
+      // is part of the "new" state. initSimilarWebSocket handles 
+      // clearing the list (via startLoader) and setting results-mode class.
+      initSimilarWebSocket(id, limit, thresh);
+      
       window.scrollTo(0, 0);
     };
 
@@ -162,8 +166,6 @@ elements.resultsList.addEventListener("click", (e) => {
     if (thresh !== CONFIG.DEFAULT_THRESH)
       url.searchParams.set("threshold", thresh);
     window.history.pushState({}, "", url);
-
-    initSimilarWebSocket(id, limit, thresh);
   }
 });
 

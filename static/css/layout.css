@@ -54,7 +54,24 @@ body.results-mode .search-container {
 }
 
 body.results-mode main {
-    padding: 20px 180px;
+    display: grid;
+    /* Default to full width (no sidebar) */
+    grid-template-columns: 100%;
+    gap: 40px;
+    padding: 20px 5%;
+    max-width: 1400px;
+    min-width: 768px;
+    margin: 0 auto;
+    align-items: start; 
+}
+
+/* 
+   Only create the sidebar column if JS detects a Tier 2+ result 
+   and adds the .has-sidebar class to body
+*/
+body.results-mode.has-sidebar main {
+    /* Main Content (flexible) | Sidebar (fixed 360px like Google) */
+    grid-template-columns: minmax(0, 1fr) 360px;
 }
 
 body.results-mode .header-tools {
@@ -63,10 +80,21 @@ body.results-mode .header-tools {
     gap: 10px;
 }
 
+/* Sidebar Container */
+.knowledge-panel {
+    display: block;
+    animation: fadeIn 0.5s ease;
+}
+
+.knowledge-panel.hidden {
+    display: none;
+}
+
 /* --- RESPONSIVE LAYOUT --- */
 @media (max-width: 768px) {
-    body.results-mode main {
-        padding: 20px;
+    body.results-mode main, 
+    body.results-mode.has-sidebar main {
+        grid-template-columns: 100%; /* Single column mobile */
     }
     body.home-mode header {
         padding: 20px;
@@ -74,5 +102,12 @@ body.results-mode .header-tools {
     body.results-mode .search-container {
         max-width: 100%;
         flex: 1;
+    }
+    /* On mobile, Sidebar goes to the top (standard Google behavior) */
+    .knowledge-panel {
+        order: -1; 
+        margin-bottom: 30px;
+        width: 100%;
+        max-width: 100%;
     }
 }
