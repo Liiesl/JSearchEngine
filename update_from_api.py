@@ -15,15 +15,15 @@ BACKUP_DIR = "backups"
 ACTRESS_LIST_FILE = "actress_db.json"
 
 CSV_HEADERS = [
-    "dvdId",
+    "dvdid",
     "title",
-    "jpTitle",
+    "jptitle",
     "actress_names",
-    "releaseDate",
+    "releasedate",
     "duration",
     "generated_url",
     "image",
-    "contentId",
+    "contentid",
     "_id",
 ]
 
@@ -188,10 +188,12 @@ def load_existing_data():
             with open(OUTPUT_FILE, "r", encoding="utf-8-sig") as f:
                 reader = csv.DictReader(f)
                 for row in reader:
-                    uid = row.get("_id") or row.get("contentId")
+                    # Normalize keys to lowercase for consistency
+                    clean_row = {k.lower().strip(): v for k, v in row.items()}
+                    uid = clean_row.get("_id") or clean_row.get("contentid")
                     if uid:
                         seen_ids.add(uid)
-                    all_data.append(row)
+                    all_data.append(clean_row)
         except Exception as e:
             print(f"⚠️ Error loading existing data: {e}")
             all_data = []
@@ -225,14 +227,14 @@ def process_new_videos(all_data, seen_ids, processed_actresses):
                     actress_str = ", ".join(final_names)
 
                     clean_row = {
-                        "dvdId": item.get("dvdId", ""),
+                        "dvdid": item.get("dvdId", ""),
                         "title": raw_title,
-                        "jpTitle": item.get("jpTitle", ""),
+                        "jptitle": item.get("jpTitle", ""),
                         "actress_names": actress_str,
-                        "releaseDate": item.get("releaseDate", ""),
+                        "releasedate": item.get("releaseDate", ""),
                         "duration": item.get("duration", 0),
                         "image": item.get("image", ""),
-                        "contentId": item.get("contentId", ""),
+                        "contentid": item.get("contentId", ""),
                         "_id": item.get("_id", ""),
                         "generated_url": f"https://javtrailers.com/video/{item.get('contentId', '')}",
                     }

@@ -39,8 +39,8 @@ window.addEventListener("DOMContentLoaded", () => {
   if (q) {
     elements.searchInput.value = q;
     elements.resetBtn.style.display = "block";
-    if (q.toLowerCase().startsWith("id:")) {
-      const id = q.substring(3).trim();
+    if (q.toLowerCase().startsWith("sim:")) {
+      const id = q.substring(4).trim();
       elements.body.classList.remove("home-mode");
       elements.body.classList.add("results-mode");
       initSimilarWebSocket(
@@ -65,8 +65,8 @@ function handleUserSearch() {
   const query = elements.searchInput.value;
   if (!query.trim()) return;
 
-  if (query.toLowerCase().startsWith("id:")) {
-    const id = query.substring(3).trim();
+  if (query.toLowerCase().startsWith("sim:")) {
+    const id = query.substring(4).trim();
     const limit = elements.limitInput.value;
     const thresh = elements.threshInput.value;
 
@@ -127,7 +127,7 @@ elements.resultsList.addEventListener("click", (e) => {
   const similarBtn = e.target.closest('[data-action="find-similar"]');
   if (similarBtn) {
     const { id, title, img } = similarBtn.dataset;
-    const query = `id:${id}`;
+    const query = `sim:${id}`;
     const limit = elements.limitInput.value;
     const thresh = elements.threshInput.value;
 
@@ -138,13 +138,13 @@ elements.resultsList.addEventListener("click", (e) => {
     const performUpdate = () => {
       // Update Header
       updateSimilarHeader(id, title, img);
-      
+
       // Initialize WebSocket AND Render Skeleton
       // We do this INSIDE the transition update so the skeleton 
       // is part of the "new" state. initSimilarWebSocket handles 
       // clearing the list (via startLoader) and setting results-mode class.
       initSimilarWebSocket(id, limit, thresh);
-      
+
       window.scrollTo(0, 0);
     };
 
@@ -169,7 +169,7 @@ elements.resultsList.addEventListener("click", (e) => {
   }
 });
 
-// --- UI EVENT LISTENERS ---
+// --- UI EVENTS LISTENERS ---
 elements.toolsBtn.addEventListener("click", () => toggleToolsPanel());
 elements.helpBtn.addEventListener("click", () =>
   elements.helpModal.classList.add("active"),
@@ -209,9 +209,9 @@ elements.threshInput.addEventListener("change", triggerUpdate);
 elements.searchInput.addEventListener(
   "input",
   () =>
-    (elements.resetBtn.style.display = elements.searchInput.value
-      ? "block"
-      : "none"),
+  (elements.resetBtn.style.display = elements.searchInput.value
+    ? "block"
+    : "none"),
 );
 elements.searchInput.addEventListener("keypress", (e) => {
   if (e.key === "Enter") handleUserSearch();
@@ -222,7 +222,7 @@ elements.resetBtn.addEventListener("click", resetApp);
 elements.closeSimilarBtn.addEventListener("click", () => {
   const currentId = elements.scId.textContent;
   exitSimilarMode();
-  elements.searchInput.value = `id:${currentId}`;
+  elements.searchInput.value = `sim:${currentId}`;
 });
 
 // Modal & Scroll
@@ -257,8 +257,8 @@ window.addEventListener("popstate", () => {
 
   if (q) {
     elements.searchInput.value = q;
-    if (q.toLowerCase().startsWith("id:")) {
-      const id = q.substring(3).trim();
+    if (q.toLowerCase().startsWith("sim:")) {
+      const id = q.substring(4).trim();
       initSimilarWebSocket(
         id,
         elements.limitInput.value,

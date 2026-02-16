@@ -32,9 +32,9 @@ export const HELP_CONTENT = `
                     <h4>Syntax: Deep Similarity</h4>
                     <p>
                         Force a vector similarity search for a specific
-                        ID using the <code>id:</code> prefix.
+                        ID using the <code>sim:</code> prefix.
                     </p>
-                    <code>"id:abc-123"</code>
+                    <code>"sim:abc-123"</code>
                 </div>
                 <div class="doc-card">
                     <h4>Actress Boost</h4>
@@ -186,14 +186,14 @@ export const HELP_CONTENT = `
  * @param {Function} onClose - The function to call when close is clicked
  */
 export function initHelpModal(container, onClose) {
-  if (!container) return;
+    if (!container) return;
 
-  // Inject HTML
-  container.innerHTML = HELP_CONTENT;
+    // Inject HTML
+    container.innerHTML = HELP_CONTENT;
 
-  // Attach event listener to the newly created close button
-  const closeBtn = container.querySelector(".close-help-modal");
-  if (closeBtn) {
-    closeBtn.addEventListener("click", onClose);
-  }
+    // Attach event listener to the newly created close button
+    const closeBtn = container.querySelector(".close-help-modal");
+    if (closeBtn) {
+        closeBtn.addEventListener("click", onClose);
+    }
 }

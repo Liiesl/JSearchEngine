@@ -267,7 +267,7 @@ export function renderActressRecommendations(profile, videos) {
 
     return `
         <div class="kp-recommendations">
-            <div class="kp-group-title">You might like these videos...</div>
+            <div class="kp-group-title">You might like movies from these actress...</div>
             ${profileHtml}
             <div class="rec-video-scroll">
                 ${videosHtml}

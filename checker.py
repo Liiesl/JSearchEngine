@@ -22,8 +22,6 @@ def load_existing_ids(csv_file):
             reader = csv.DictReader(f)
             for row in reader:
                 # CHANGED: Reading lowercase keys from compiled CSV
-                if row.get("_id"):
-                    existing_ids.add(row["_id"].strip())
                 if row.get("dvdid"):
                     existing_ids.add(row["dvdid"].strip())
                 if row.get("contentid"):

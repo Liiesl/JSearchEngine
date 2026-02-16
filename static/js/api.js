@@ -91,60 +91,74 @@ export async function performStandardSearch(
       });
 
       elements.resultsList.appendChild(fragment);
+      if (data.mode === 'semantic') {
+        // --- NEW: Check for Dominant Actresses (Multi-Actresses Support) ---
+        const actressCountsTop10 = {};
+        const actressCountsTop50 = {};
+        const qualifyingActresses = new Set();
 
-      // --- NEW: Check for Dominant Actress (>= 60%) ---
-      const actressCounts = {};
-      let totalVideos = 0;
+        data.results.forEach((item, index) => {
+          // Skip bio items
+          if (item.is_bio || (item.data && item.data.type === 'bio')) return;
 
-      data.results.forEach((item) => {
-        // Skip bio items
-        if (item.is_bio || (item.data && item.data.type === 'bio')) return;
+          const row = item.data;
+          if (row && row.actress_names) {
+            const names = row.actress_names.split(",").map(n => n.trim());
+            names.forEach(name => {
+              if (!name) return;
 
-        totalVideos++;
-        const row = item.data;
-        if (row && row.actress_names) {
-          const names = row.actress_names.split(",").map(n => n.trim());
-          names.forEach(name => {
-            if (name) actressCounts[name] = (actressCounts[name] || 0) + 1;
-          });
-        }
-      });
+              // Count for Top 10
+              if (index < 10) {
+                actressCountsTop10[name] = (actressCountsTop10[name] || 0) + 1;
+                if (actressCountsTop10[name] >= 3) qualifyingActresses.add(name);
+              }
 
-      if (totalVideos > 0) {
-        let dominantActress = null;
-        // Check if any actress appears in >= 60% of videos
-        for (const [name, count] of Object.entries(actressCounts)) {
-          if (count / totalVideos >= 0.6) {
-            dominantActress = name;
-            break;
+              // Count for Top 50 (or total results if less)
+              if (index < 50) {
+                actressCountsTop50[name] = (actressCountsTop50[name] || 0) + 1;
+                if (actressCountsTop50[name] >= 5) qualifyingActresses.add(name);
+              }
+            });
           }
-        }
+        });
 
-        if (dominantActress) {
-          // Determine if we should append to existing panel or start new
-          // If we already rendered a bio for this actress (Tier 2), we might duplicate info?
-          // But the user said "do this after load complete" and "add functionality to knowledge panel".
-          // If existing panel shows "About", this adds "You would like these video...".
-          // So appending is correct.
-
-          fetch(`/api/actress_top_videos?name=${encodeURIComponent(dominantActress)}`)
-            .then(res => res.json())
-            .then(recData => {
-              if (recData.profile && recData.videos && recData.videos.length > 0) {
-                const kpHtml = renderActressRecommendations(recData.profile, recData.videos);
-
-                // If panel was hidden (no purely High Tier bio result), show it now
-                if (elements.knowledgePanel.classList.contains("hidden")) {
-                  elements.knowledgePanel.classList.remove("hidden");
-                  elements.body.classList.add("has-sidebar");
+        if (qualifyingActresses.size > 0) {
+          // Process each qualifying actress
+          const promises = Array.from(qualifyingActresses).map(actressName => {
+            return fetch(`/api/actress_top_videos?name=${encodeURIComponent(actressName)}`)
+              .then(res => res.json())
+              .then(recData => {
+                if (recData.profile && recData.videos && recData.videos.length > 0) {
+                  return recData;
                 }
+                return null;
+              })
+              .catch(err => {
+                console.error(`Rec Error for ${actressName}:`, err);
+                return null;
+              });
+          });
 
+          Promise.all(promises).then(results => {
+            const validResults = results.filter(r => r !== null);
+
+            if (validResults.length > 0) {
+              // If panel was hidden (no purely High Tier bio result), show it now
+              if (elements.knowledgePanel.classList.contains("hidden")) {
+                elements.knowledgePanel.classList.remove("hidden");
+                elements.body.classList.add("has-sidebar");
+              }
+
+              const fragment = document.createDocumentFragment();
+              validResults.forEach(recData => {
+                const kpHtml = renderActressRecommendations(recData.profile, recData.videos);
                 const div = document.createElement("div");
                 div.innerHTML = kpHtml;
-                elements.knowledgePanel.appendChild(div);
-              }
-            })
-            .catch(err => console.error("Rec Error:", err));
+                fragment.appendChild(div);
+              });
+              elements.knowledgePanel.appendChild(fragment);
+            }
+          });
         }
       }
     };
