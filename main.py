@@ -24,7 +24,7 @@ from sentence_transformers import SentenceTransformer
 # --- CONFIG ---
 DB_FOLDER = "jav_search_index"
 TABLE_NAME = "videos"
-MODEL_NAME = "intfloat/multilingual-e5-large"
+MODEL_NAME = "microsoft/harrier-oss-v1-0.6b"
 ACTRESS_DB_FILE = "actress_db.json"
 ID_STRUCTURE_FILE = "id_structure.json"  # <--- ADDED CONFIG
 
@@ -56,7 +56,13 @@ def normalize_text(text):
 async def lifespan(app: FastAPI):
     # Load resources on startup
     print("⚡ Loading Neural Model & Database...")
-    resources["model"] = SentenceTransformer(MODEL_NAME)
+    # 1. Load the model directly to the GPU (if available)
+    model = SentenceTransformer(MODEL_NAME, device='cuda')
+
+    # 2. Convert the model to half precision (FP16)
+    model.half() 
+
+    resources["model"] = model
 
     try:
         db = lancedb.connect(DB_FOLDER)
@@ -397,8 +403,8 @@ async def search(q: str, top_k: int = 20, threshold: float = 0.65):
 
     # 3. Encode
     search_text = q
-    prefix = "query: " if "e5" in MODEL_NAME else ""
-    query_vec = model.encode(prefix + search_text, normalize_embeddings=True)
+    query_instruction = "Instruct: Given a web search query, retrieve relevant passages that answer the query\nQuery: "
+    query_vec = model.encode(query_instruction + search_text, normalize_embeddings=True)
 
     # 4. DB Query
     results_df = table.search(query_vec).limit(top_k * 3).to_pandas()
